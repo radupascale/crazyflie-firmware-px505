@@ -15,5 +15,5 @@
 	url = https://github.com/throwtheswitch/unity.git
 [submodule "tools/crazyflie-simulation"]
 	path = tools/crazyflie-simulation
-	url = https://github.com/llanesc/crazyflie-simulation.git
+	url = https://github.com/radupascale/crazyflie-simulation-px505.git
 	branch = sitl-release
