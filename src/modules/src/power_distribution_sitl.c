@@ -51,6 +51,11 @@
 #  define DEFAULT_IDLE_THRUST CONFIG_MOTORS_DEFAULT_IDLE_THRUST
 #endif
 
+/* PX: Needed for X500 simulation */
+#define DSHOT_MIN_THROTTLE           48
+#define DSHOT_MAX_THROTTLE           2047
+#define DSHOT_RANGE                  (DSHOT_MAX_THROTTLE - DSHOT_MIN_THROTTLE)
+
 
 static struct {
   uint16_t m1;
@@ -206,17 +211,35 @@ uint16_t getMotorRatio(int id)
 }
 void motorsSetRatio(const motors_thrust_pwm_t* motorPwm)
 {
-  motorPower.m1 = motorPwm->motors.m1;
-  motorPower.m2 = motorPwm->motors.m2;
-  motorPower.m3 = motorPwm->motors.m3;
-  motorPower.m4 = motorPwm->motors.m4;
+ /* TODO PX: Add DSHOT conversion to [DSHOT_MIN_THROTTLE; DHSOT_MAX_THROTTLE]*/
+    motorPower.m1 = (motorPwm->motors.m1 >> 5);
+    if (motorPower.m1 > 0 && motorPower.m1 < DSHOT_MIN_THROTTLE) {
+        motorPower.m1 = DSHOT_MIN_THROTTLE;
+    }
+    motorPower.m2 = (motorPwm->motors.m2 >> 5);
+    if (motorPower.m2 > 0 && motorPower.m2 < DSHOT_MIN_THROTTLE) {
+        motorPower.m2 = DSHOT_MIN_THROTTLE;
+    }
+    motorPower.m3 = (motorPwm->motors.m3 >> 5);
+    if (motorPower.m3 > 0 && motorPower.m3 < DSHOT_MIN_THROTTLE) {
+        motorPower.m3 = DSHOT_MIN_THROTTLE;
+    }
+    motorPower.m4 = (motorPwm->motors.m4 >> 5);
+    if (motorPower.m4 > 0 && motorPower.m4 < DSHOT_MIN_THROTTLE) {
+        motorPower.m4 = DSHOT_MIN_THROTTLE;
+    }
+
+//   motorPower.m1 = motorPwm->motors.m1;
+//   motorPower.m2 = motorPwm->motors.m2;
+//   motorPower.m3 = motorPwm->motors.m3;
+//   motorPower.m4 = motorPwm->motors.m4;
 
   if (xTaskGetTickCount() - lastSentTime >= M2T(1)){
     memcpy(p.data , (uint8_t *) &motorPower , p.size);
     crtpSendPacket(&p);
     lastSentTime = xTaskGetTickCount();
   }
-  // DEBUG_PRINT("%d , %d , %d , %d  \n", (int) motorPower.m1 , (int) motorPower.m2 , (int) motorPower.m3 , (int) motorPower.m4 );
+//   DEBUG_PRINT("%d , %d , %d , %d  \n", (int) motorPower.m1 , (int) motorPower.m2 , (int) motorPower.m3 , (int) motorPower.m4 );
 }
 /**
  * Power distribution parameters
