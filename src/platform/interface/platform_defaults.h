@@ -53,11 +53,15 @@
 // TODO provide those in each config. Those are values of cf2 platform
 #ifndef ARM_LENGTH
     // m
-    #define ARM_LENGTH  0.046f
+    /* TODO PX: Change value to X500 */
+    #define ARM_LENGTH  0.25f
+    // #define ARM_LENGTH  0.046f
 #endif
 #ifndef CF_MASS
     // kg
-    #define CF_MASS     0.027f
+    /* TODO PX: Change value to X500 */
+    #define CF_MASS     1.3269f
+    // #define CF_MASS     0.027f
 #endif
 
 // IMU alignment on the airframe 
